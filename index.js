@@ -5,10 +5,10 @@ const ejs = require("ejs");
 const bodyParser = require("body-parser");
 const app = express();
 
-//set views file
+// set views file
 app.set("views", path.join(__dirname, "views"));
 
-//set view engine
+// set view engine
 app.set("view engine", "ejs");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -25,6 +25,7 @@ db.connect((err) => {
   console.log("MySql Connected...");
 });
 
+// Read DB
 app.get("/", (req, res) => {
   let sql = "SELECT * FROM users";
   let query = db.query(sql, (err, rows) => {
@@ -38,10 +39,11 @@ app.get("/", (req, res) => {
 
 app.get("/add", (req, res) => {
   res.render("user_add", {
-    title: "CRUD Operation using NodeJS / ExpressJS / MySQL",
+    title: "Add New User",
   });
 });
 
+// Create DB
 app.post("/save", (req, res) => {
   let data = {
     name: req.body.name,
@@ -61,16 +63,17 @@ app.get("/edit/:userId", (req, res) => {
   let query = db.query(sql, (err, result) => {
     if (err) throw err;
     res.render("user_edit", {
-      title: "CRUD Operation using NodeJS / ExpressJS / MySQL",
+      title: "Edit User",
       user: result[0],
     });
   });
 });
 
+// Update DB
 app.post("/update", (req, res) => {
   const userId = req.body.id;
   let sql =
-    "update users SET name='" +
+    "UPDATE users SET name='" +
     req.body.name +
     "',  email='" +
     req.body.email +
@@ -84,9 +87,10 @@ app.post("/update", (req, res) => {
   });
 });
 
+// Delete DB
 app.get("/delete/:userId", (req, res) => {
   const userId = req.params.userId;
-  let sql = `DELETE from users where id = ${userId}`;
+  let sql = `DELETE FROM users where id = ${userId}`;
   let query = db.query(sql, (err, result) => {
     if (err) throw err;
     res.redirect("/");
